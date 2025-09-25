@@ -1,0 +1,66 @@
+<script>
+    import { onMount } from 'svelte';
+    import Header from '$lib/Header.svelte';
+    import TourCard from '$lib/TourCard.svelte';
+    import LanguageModal from '$lib/LanguageModal.svelte';
+    import BookingModal from '$lib/BookingModal.svelte';
+
+    let showLanguageModal = false;
+    let showBookingModal = false;
+    let selectedItem = null;
+
+    onMount(() => {
+        const selectedLanguage = localStorage.getItem('selectedLanguage');
+        if (!selectedLanguage) {
+            showLanguageModal = true;
+        }
+    });
+
+    const tours = [
+        // Data tur
+        { name: 'Road to Bira', image: '/images/bira.jpg', description: 'Nikmati keindahan pasir putih dan perahu Phinisi di ujung selatan Sulawesi.' },
+        { name: 'Road to Toraja', image: '/images/toraja.jpg', description: 'Kunjungi rumah adat Tongkonan dan makam unik di Tanah Para Raja.' },
+        { name: 'Danau Tempe', image: '/images/danau-tempe.jpg', description: 'Pengalaman unik melihat perkampungan terapung di atas danau.' },
+        { name: 'Malino Highlands', image: '/images/malino.jpg', description: 'Rasakan sejuknya udara pegunungan dan hamparan kebun teh yang menawan.' },
+        { name: 'Rammang-Rammang', image: '/images/rammang-rammang.jpg', description: 'Berpetualang di tengah bukit karst yang megah.' }
+    ];
+
+    function handleBookItem(event) {
+        selectedItem = event.detail.tour;
+        showBookingModal = true;
+    }
+</script>
+
+{#if showLanguageModal}
+    <LanguageModal bind:showModal={showLanguageModal} />
+{/if}
+
+{#if showBookingModal}
+    <BookingModal bind:show={showBookingModal} item={selectedItem} />
+{/if}
+
+<Header />
+
+<main class="pt-20 bg-gray-50">
+    <section class="relative h-[80vh] bg-cover bg-center" style="background-image: url('/images/header-sulawesi.jpg');">
+        <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-center text-white px-4">
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-4">
+                Jelajahi Sulawesi Selatan<br>dengan Nyaman
+            </h1>
+            <p class="text-lg md:text-xl font-light max-w-2xl mb-8">
+                Rental mobil terpercaya untuk perjalanan dalam kota, luar kota, dan petualangan wisata.
+            </p>
+        </div>
+    </section>
+
+    <section class="py-16 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-12">Destinasi Wisata Unggulan</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {#each tours as tour}
+                    <TourCard {tour} on:book={handleBookItem} />
+                {/each}
+            </div>
+        </div>
+    </section>
+</main>

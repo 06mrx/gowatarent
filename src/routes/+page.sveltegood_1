@@ -1,0 +1,971 @@
+<script>
+	import { Car, MapPin } from 'lucide-svelte';
+	import BookingModal from '$lib/BookingModal.svelte';
+
+	let currentLanguage = $state('id');
+	let isMenuOpen = $state(false);
+	let selectedService = $state(null);
+	let showLanguageModal = $state(true);
+	let showBookingModal = $state(false);
+	let selectedItem = $state({
+		name: '123'
+	});
+
+	let modalOpen = $state(false);
+    let modalImage = $state('');
+
+	// export const prerender = true;
+
+	const translations = {
+		id: {
+			home: 'Beranda',
+			services: 'Layanan',
+			fleet: 'Armada',
+			about: 'Tentang',
+			contact: 'Kontak',
+			chooseLanguage: 'Pilih Bahasa / Choose Language',
+			indonesian: 'Bahasa Indonesia',
+			english: 'English',
+			heroTitle: ' Gowata Rent',
+			heroSubtitle:
+				'Gowata Rent menyediakan layanan rental mobil terpercaya dengan armada terawat, harga bersaing, dan pelayanan profesional untuk perjalanan aman dan nyaman',
+			bookNow: 'Pesan Sekarang',
+			ourFleet: 'Lihat Armada',
+			servicesTitle: 'Layanan Kami',
+			servicesSubtitle: 'Berbagai pilihan layanan untuk memenuhi kebutuhan perjalanan Anda',
+			cityRental: 'Rental Dalam Kota',
+			cityRentalDesc: 'Solusi transportasi untuk kebutuhan dalam kota Makassar dan sekitarnya',
+			outCityRental: 'Rental Luar Kota',
+			outCityRentalDesc: 'Perjalanan jarak jauh ke berbagai destinasi di Sulawesi Selatan',
+			selfDrive: 'Lepas Kunci',
+			selfDriveDesc: 'Kebebasan berkendara sendiri dengan mobil pilihan Anda',
+			airportTransfer: 'Antar Jemput Bandara',
+			airportTransferDesc: 'Layanan transfer dari/ke Bandara Sultan Hasanuddin',
+			tourPackage: 'Paket Wisata',
+			tourPackageDesc: 'Paket lengkap ke destinasi populer: Bira, Toraja, Malino, dan lainnya',
+			customTrip: 'Custom Trip',
+			customTripDesc: 'Rencana perjalanan disesuaikan dengan keinginan Anda',
+			destinationsTitle: 'Destinasi Popular',
+			bira: 'Pantai Bira',
+			toraja: 'Tana Toraja',
+			tempe: 'Danau Tempe',
+			malino: 'Malino',
+			rammang: 'Rammang-Rammang',
+			customDest: 'Destinasi Custom',
+			fleetTitle: 'Armada Kami',
+			fleetSubtitle: 'Pilihan kendaraan berkualitas untuk perjalanan yang nyaman',
+			aboutTitle: 'Tentang Kami',
+			aboutDesc:
+				'Kami adalah penyedia layanan rental mobil terpercaya di Makassar dengan pengalaman bertahun-tahun melayani wisatawan domestik dan internasional.',
+			contactTitle: 'Hubungi Kami',
+			contactDesc: 'Siap melayani Anda 24/7 untuk kebutuhan rental mobil',
+			feature1: 'Mobil Terawat',
+			feature1Desc: 'Semua kendaraan dalam kondisi prima',
+			feature2: 'Driver Berpengalaman',
+			feature2Desc: 'Supir yang menguasai rute wisata',
+			feature3: 'Harga Terjangkau',
+			feature3Desc: 'Tarif kompetitif tanpa biaya tersembunyi',
+			feature4: 'Pelayanan 24/7',
+			feature4Desc: 'Siap melayani kapan saja Anda butuhkan',
+			footerDesc: 'Rental mobil terpercaya di Makassar untuk semua kebutuhan perjalanan Anda',
+			quickLinks: 'Link Cepat',
+			followUs: 'Ikuti Kami',
+			ctaTitle: 'Siap Memulai Petualangan?',
+			ctaDesc: 'Hubungi kami sekarang untuk mendapatkan penawaran terbaik',
+			ctaButton: 'Hubungi WhatsApp',
+			biraDesc: 'Nikmati pasir putih dan air jernih di Pantai Bira',
+			torajaDesc: 'Eksplorasi budaya unik dan pemandangan indah di Tana Toraja',
+			tempeDesc: 'Rasakan keindahan Danau Tempe dengan perahu tradisional',
+			malinoDesc: 'Dingin dan asri, Malino cocok untuk relaksasi',
+			rammangDesc: 'Keajaiban alam di Rammang-Rammang dengan tebing karstnya',
+			cta: 'Pesan Sekarang',
+			services: 'Layanan Kami',
+			carsAvailable: 'Mobil Tersedia',
+			destinationSubtitle: 'Jelajahi destinasi indah di Sulawesi Selatan',
+			petrol: 'Bensin',
+			diesel: 'Diesel'
+		},
+		en: {
+			home: 'Home',
+			services: 'Services',
+			fleet: 'Fleet',
+			about: 'About',
+			contact: 'Contact',
+			chooseLanguage: 'Choose Language / Pilih Bahasa',
+			indonesian: 'Bahasa Indonesia',
+			english: 'English',
+			heroTitle: ' Gowata Rent',
+			heroSubtitle: 'Gowata Rent provides trusted car rental services with a well-maintained fleet, competitive prices, and professional service for safe and comfortable travel',
+			bookNow: 'Book Now',
+			ourFleet: 'View Fleet',
+			servicesTitle: 'Our Services',
+			servicesSubtitle: 'Various service options to meet your travel needs',
+			cityRental: 'City Rental',
+			cityRentalDesc: 'Transportation solution for needs within Makassar city and surroundings',
+			outCityRental: 'Out of City Rental',
+			outCityRentalDesc: 'Long distance travel to various destinations in South Sulawesi',
+			selfDrive: 'Self Drive',
+			selfDriveDesc: 'Freedom to drive yourself with your choice of car',
+			airportTransfer: 'Airport Transfer',
+			airportTransferDesc: 'Transfer service from/to Sultan Hasanuddin Airport',
+			tourPackage: 'Tour Package',
+			tourPackageDesc: 'Complete packages to popular destinations: Bira, Toraja, Malino, and more',
+			customTrip: 'Custom Trip',
+			customTripDesc: 'Travel plans customized to your wishes',
+			destinationsTitle: 'Popular Destinations',
+			bira: 'Bira Beach',
+			toraja: 'Tana Toraja',
+			tempe: 'Tempe Lake',
+			malino: 'Malino',
+			rammang: 'Rammang-Rammang',
+			customDest: 'Custom Destination',
+			fleetTitle: 'Our Fleet',
+			fleetSubtitle: 'Quality vehicle options for comfortable travel',
+			aboutTitle: 'About Us',
+			aboutDesc:
+				'We are a trusted car rental service provider in Makassar with years of experience serving domestic and international tourists.',
+			contactTitle: 'Contact Us',
+			contactDesc: 'Ready to serve you 24/7 for your car rental needs',
+			feature1: 'Well-Maintained Cars',
+			feature1Desc: 'All vehicles in prime condition',
+			feature2: 'Experienced Drivers',
+			feature2Desc: 'Drivers who master tourist routes',
+			feature3: 'Affordable Prices',
+			feature3Desc: 'Competitive rates with no hidden fees',
+			feature4: '24/7 Service',
+			feature4Desc: 'Ready to serve whenever you need',
+			footerDesc: 'Trusted car rental in Makassar for all your travel needs',
+			quickLinks: 'Quick Links',
+			followUs: 'Follow Us',
+			ctaTitle: 'Ready to Start Your Adventure?',
+			ctaDesc: 'Contact us now to get the best offer',
+			ctaButton: 'Contact WhatsApp',
+			biraDesc: 'Enjoy white sand and clear waters at Bira Beach',
+			torajaDesc: 'Explore unique culture and beautiful scenery in Tana Toraja',
+			tempeDesc: 'Experience the beauty of Tempe Lake with traditional boats',
+			malinoDesc: 'Cool and serene, Malino is perfect for relaxation',
+			rammangDesc: 'Natural wonder in Rammang-Rammang with its karst cliffs',
+			cta: 'Book Now',
+			services: 'Our Services',
+			carsAvailable: 'Cars Available',
+			destinationSubtitle: 'Explore beautiful destinations in South Sulawesi',
+			petrol: 'Petrol',
+			diesel: 'Diesel'
+		}
+	};
+
+	const t = (key) => translations[currentLanguage][key] || key;
+
+	const changeLanguage = (lang) => {
+		currentLanguage = lang;
+		showLanguageModal = false;
+	};
+
+	const handleBook = (xServices) => {
+		showBookingModal = true;
+		selectedService = xServices;
+	};
+
+	const cars = [
+		{
+			name: 'Honda Brio',
+			category: 'SUV',
+			isPterol: true,
+			passengers: '5',
+			price: '250-350K',
+			features: ['AUTOMATIC', 'AC', 'AUDIO', 'COMFORTABLE'],
+			image: '/images/brio.jpeg'
+		},
+		{
+			name: 'Toyota Calya',
+			category: '4WD SUV',
+			isPterol: false,
+			passengers: '7',
+			price: '250-300K',
+			features: ['4WD', 'AC', 'AUDIO', 'COMFORTABLE'],
+			image: '/images/calya.jpeg'
+		},
+		{
+			name: 'Daihatsu Sigra',
+			category: '4WD SUV',
+			isPterol: false,
+			passengers: '7',
+			price: '250-300K',
+			features: ['4WD', 'AC', 'AUDIO', 'COMFORTABLE'],
+			image: '/images/sigra.jpeg'
+		},
+		{
+			name: 'Toyota Avanza CVT G',
+			category: 'MPV',
+			isPterol: true,
+			passengers: '7',
+			price: '300-350K',
+			features: ['MANUAL', 'AC', 'AUDIO', 'COMFORTABLE'],
+			image: '/images/avanza.jpeg'
+		},
+		{
+			name: 'Honda Jazz',
+			category: 'SUV',
+			isPterol: true,
+			passengers: '5',
+			price: '300-350K',
+			features: ['AUTOMATIC', 'AC', 'AUDIO', 'COMFORTABLE'],
+			image: '/images/jazz.jpeg'
+		},
+		{
+			name: 'Toyota Rush',
+			category: '4WD SUV',
+			isPterol: false,
+			passengers: '7',
+			price: '350-400K',
+			features: ['4WD', 'AC', 'AUDIO', 'COMFORTABLE'],
+			image: '/images/rush.jpeg'
+		},
+		{
+			name: 'Daihatsu Grandmax Pick Up',
+			category: '4WD SUV',
+			isPterol: false,
+			passengers: '7',
+			price: '300-350K',
+			features: ['4WD', 'AC', 'AUDIO', 'COMFORTABLE'],
+			image: '/images/grandmax.jpeg'
+		},
+		{
+			name: 'Toyota Innova Reborn',
+			category: 'MPV',
+			isPterol: false,
+			passengers: '7',
+			price: '400-450K',
+			features: ['MANUAL/AUTO', 'AC', 'AUDIO', 'COMFORTABLE'],
+			image: '/images/inova.jpeg'
+		},
+		{
+			name: 'Mitsubishi Pajero Sport',
+			category: '4WD SUV',
+			isPterol: false,
+			passengers: '7',
+			price: '850/950K',
+			features: ['4WD', 'AC', 'AUDIO', 'COMFORTABLE'],
+			image: '/images/pajero_sport.jpeg'
+		},
+		{
+			name: 'Inova Zenix Hybrid Q',
+			category: '4WD SUV',
+			isPterol: false,
+			passengers: '7',
+			price: '800-900K',
+			features: ['4WD', 'AC', 'AUDIO', 'COMFORTABLE'],
+			image: '/images/zenix.jpeg'
+		},
+		{
+			name: 'Toyota Fortuner',
+			category: '4WD SUV',
+			isPterol: false,
+			passengers: '7',
+			price: '850-950K',
+			features: ['4WD', 'AC', 'AUDIO', 'COMFORTABLE'],
+			image: '/images/fortuner.jpeg'
+		},
+		{
+			name: 'Toyota Hiace Premio',
+			category: '4WD SUV',
+			isPterol: false,
+			passengers: '7',
+			price: '1500-2500K',
+			features: ['4WD', 'AC', 'AUDIO', 'COMFORTABLE'],
+			image: '/images/hiace.jpeg'
+		},
+		{
+			name: 'Bus Parawisata',
+			category: '4WD SUV',
+			isPterol: false,
+			passengers: '7',
+			price: '1800-2500K',
+			features: ['4WD', 'AC', 'AUDIO', 'COMFORTABLE'],
+			image: '/images/bus.jpeg'
+		},
+		{
+			name: 'Toyota Alphard',
+			category: '4WD SUV',
+			isPterol: false,
+			passengers: '7',
+			price: '2500-3500K',
+			features: ['4WD', 'AC', 'AUDIO', 'COMFORTABLE'],
+			image: '/images/alphard.jpeg'
+		}
+	];
+
+	const destinations = [
+		{
+			name: t('bira'),
+			image: '/images/hero-bira.jpg',
+			desc: translations['en'].biraDesc
+		},
+		{
+			name: t('toraja'),
+			image: '/images/toraja.jpg',
+			desc: translations['en'].torajaDesc
+		},
+		{
+			name: t('malino'),
+			image: '/images/malino.jpg',
+			desc: translations['en'].malinoDesc
+		},
+		{
+			name: t('rammang'),
+			image: '/images/rammang.jpg',
+			desc: translations['en'].rammangDesc
+		},
+		{
+			name: t('tempe'),
+			image: '/images/tempe.jpg',
+			desc: translations['en'].tempeDesc
+		}
+	];
+
+	// Fungsi untuk membuka modal dan menampilkan gambar yang dipilih (BARU)
+    function openModal(imageSrc) {
+        modalImage = imageSrc;
+        modalOpen = true;
+    }
+
+    // Fungsi untuk menutup modal (BARU)
+    function closeModal() {
+        modalOpen = false;
+    }
+</script>
+
+{#if showBookingModal}
+	<BookingModal
+		{cars}
+		bind:show={showBookingModal}
+		item={selectedItem}
+		serviceTypes={selectedService}
+		{currentLanguage}
+	/>
+{/if}
+<!-- LANGUAGE MODAL -->
+{#if showLanguageModal}
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
+		<div
+			class="w-full max-w-md rounded-3xl border border-white/20 bg-white/90 p-8 shadow-2xl backdrop-blur-lg"
+		>
+			<h2 class="mb-8 text-center text-2xl font-light tracking-wide text-gray-800">
+				{t('chooseLanguage')}
+			</h2>
+			<div class="space-y-4">
+				<button
+					on:click={() => changeLanguage('id')}
+					class="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-4 font-medium tracking-wide text-white shadow-lg transition-all duration-300 hover:from-amber-600 hover:to-orange-600 hover:shadow-xl"
+				>
+					🇮🇩 {translations.id.indonesian}
+				</button>
+				<button
+					on:click={() => changeLanguage('en')}
+					class="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 px-6 py-4 font-medium tracking-wide text-white shadow-lg transition-all duration-300 hover:from-sky-600 hover:to-blue-700 hover:shadow-xl"
+				>
+					🇺🇸 {translations.en.english}
+				</button>
+			</div>
+		</div>
+	</div>
+{/if}
+
+{#if modalOpen}
+    <div
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm"
+        on:click|self={closeModal}
+    >
+        <div class="relative max-w-4xl p-4">
+            <button
+                class="absolute top-4 right-4 z-50 rounded-full bg-white px-2 text-2xl font-bold text-gray-800 transition-colors duration-200 hover:bg-gray-200"
+                on:click={closeModal}
+            >
+                &times;
+            </button>
+            <img src={modalImage} alt="Full Preview" class="max-h-[90vh] w-auto rounded-lg shadow-2xl" />
+        </div>
+    </div>
+{/if}
+<!-- NAVIGATION -->
+<nav class="fixed top-0 z-40 w-full border-b border-gray-100/50 bg-white/80 backdrop-blur-md">
+	<div class="mx-auto max-w-7xl px-6">
+		<div class="flex items-center justify-between py-5">
+			<div class="flex items-center">
+				<div
+					class="text-md bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text font-bold text-transparent"
+				>
+					Gowata Rent
+				</div>
+			</div>
+
+			<div class="hidden space-x-8 md:flex">
+				<a
+					href="#home"
+					class="group relative font-medium tracking-wide text-gray-700 transition-colors hover:text-amber-600"
+				>
+					{t('home')}
+					<span
+						class="absolute -bottom-1 left-0 h-0.5 w-0 bg-amber-600 transition-all duration-300 group-hover:w-full"
+					></span>
+				</a>
+				<a
+					href="#services"
+					class="group relative font-medium tracking-wide text-gray-700 transition-colors hover:text-amber-600"
+				>
+					{t('services')}
+					<span
+						class="absolute -bottom-1 left-0 h-0.5 w-0 bg-amber-600 transition-all duration-300 group-hover:w-full"
+					></span>
+				</a>
+				<a
+					href="#fleet"
+					class="group relative font-medium tracking-wide text-gray-700 transition-colors hover:text-amber-600"
+				>
+					{t('fleet')}
+					<span
+						class="absolute -bottom-1 left-0 h-0.5 w-0 bg-amber-600 transition-all duration-300 group-hover:w-full"
+					></span>
+				</a>
+				<!-- <a
+					href="#about"
+					class="group relative font-medium tracking-wide text-gray-700 transition-colors hover:text-amber-600"
+				>
+					{t('about')}
+					<span
+						class="absolute -bottom-1 left-0 h-0.5 w-0 bg-amber-600 transition-all duration-300 group-hover:w-full"
+					></span>
+				</a> -->
+				<a
+					href="#contact"
+					class="group relative font-medium tracking-wide text-gray-700 transition-colors hover:text-amber-600"
+				>
+					{t('contact')}
+					<span
+						class="absolute -bottom-1 left-0 h-0.5 w-0 bg-amber-600 transition-all duration-300 group-hover:w-full"
+					></span>
+				</a>
+			</div>
+
+			<div class="flex items-center space-x-4">
+				<button
+					on:click={() => (showLanguageModal = true)}
+					class="rounded-full bg-gray-100/80 px-4 py-2 text-sm font-medium backdrop-blur-sm transition-all duration-300 hover:bg-gray-200"
+				>
+					{currentLanguage === 'id' ? '🇮🇩 ID' : '🇺🇸 EN'}
+				</button>
+
+				<button
+					on:click={() => (isMenuOpen = !isMenuOpen)}
+					class="rounded-full p-2 text-gray-700 transition-colors hover:bg-gray-100 md:hidden"
+				>
+					<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M4 6h16M4 12h16M4 18h16"
+						></path>
+					</svg>
+				</button>
+			</div>
+		</div>
+
+		{#if isMenuOpen}
+			<div class="border-t border-gray-100/50 py-6 md:hidden">
+				<div class="space-y-4">
+					<a
+						href="#home"
+						class="block rounded-xl px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-amber-50"
+						>{t('home')}</a
+					>
+					<a
+						href="#services"
+						class="block rounded-xl px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-amber-50"
+						>{t('services')}</a
+					>
+					<a
+						href="#fleet"
+						class="block rounded-xl px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-amber-50"
+						>{t('fleet')}</a
+					>
+					<!-- <a
+						href="#about"
+						class="block rounded-xl px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-amber-50"
+						>{t('about')}</a
+					> -->
+					<a
+						href="#contact"
+						class="block rounded-xl px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-amber-50"
+						>{t('contact')}</a
+					>
+				</div>
+			</div>
+		{/if}
+	</div>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="relative flex min-h-screen items-center overflow-hidden">
+	<div class="absolute inset-0 z-0 bg-black"></div>
+	<div
+		class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60"
+		style="background-image: url('/images/hero-bira.jpg');"
+	></div>
+
+	<div class="relative z-10 mx-auto max-w-4xl px-6 py-20 text-center">
+		<h1 class="mb-6 text-5xl leading-tight font-semibold! tracking-tight text-white md:text-7xl">
+			{t('heroTitle')}
+		</h1>
+
+		<p class="mx-auto mb-8 max-w-3xl text-xl leading-relaxed font-light text-white/90 md:text-2xl">
+			{t('heroSubtitle')}
+		</p>
+
+		<div class="mb-12 flex flex-col justify-center gap-4 sm:flex-row">
+			<a
+				href="https://wa.me/6282343663454"
+				target="_blank"
+				class="hover:to-emerakd-600 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-emerald-500 px-8 py-4 text-lg font-medium tracking-wide text-white shadow-lg transition-all duration-300 hover:from-green-600 hover:shadow-xl"
+			>
+				WA : 082343663454
+			</a>
+		</div>
+
+		<div class="grid grid-cols-1 gap-8 border-t border-white/20 pt-8 sm:grid-cols-3">
+			<div class="text-center">
+				<div class="text-3xl font-light text-white">10+</div>
+				<div class="text-sm font-light tracking-wide text-white/70">{t.carsAvailable}</div>
+			</div>
+			<div class="text-center">
+				<div class="text-3xl font-light text-white">5+</div>
+				<div class="text-sm font-light tracking-wide text-white/70">Destinasi Populer</div>
+			</div>
+			<div class="text-center">
+				<div class="text-3xl font-light text-white">24/7</div>
+				<div class="text-sm font-light tracking-wide text-white/70">Layanan Premium</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="absolute bottom-8 left-1/2 -translate-x-1/2 transform animate-bounce">
+		<svg class="h-6 w-6 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<path
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				stroke-width="2"
+				d="M19 14l-7 7m0 0l-7-7m7 7V3"
+			></path>
+		</svg>
+	</div>
+</section>
+
+<!-- SERVICES SECTION -->
+<section id="services" class="bg-gradient-to-b from-white to-gray-50 py-24">
+	<div class="mx-auto max-w-7xl px-6">
+		<div class="mb-20 text-center">
+			<h2 class="mb-6 text-5xl font-light tracking-tight text-gray-900">{t('servicesTitle')}</h2>
+			<p class="mx-auto max-w-3xl text-xl font-light text-gray-600">{t('servicesSubtitle')}</p>
+		</div>
+
+		<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+			{#each [{ key: 'cityRental', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24"><path fill="currentColor" d="m5 11l1.5-4.5h11L19 11m-1.5 5a1.5 1.5 0 0 1-1.5-1.5a1.5 1.5 0 0 1 1.5-1.5a1.5 1.5 0 0 1 1.5 1.5a1.5 1.5 0 0 1-1.5 1.5m-11 0A1.5 1.5 0 0 1 5 14.5A1.5 1.5 0 0 1 6.5 13A1.5 1.5 0 0 1 8 14.5A1.5 1.5 0 0 1 6.5 16M18.92 6c-.2-.58-.76-1-1.42-1h-11c-.66 0-1.22.42-1.42 1L3 12v8a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h12v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-8z"/></svg>', color: 'from-blue-500 to-cyan-500', descKey: 'cityRentalDesc' }, { key: 'outCityRental', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24"><path fill="currentColor" d="M12 18c0-3.31 2.69-6 6-6c1.09 0 2.12.3 3 .81V12l-2.08-6c-.2-.58-.76-1-1.42-1h-11c-.66 0-1.22.42-1.42 1L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h6.09c-.05-.33-.09-.66-.09-1M6.5 6.5h11L19 11H5zm0 9.5c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16M19 21v-2h-4v-2h4v-2l3 3z"/></svg>', color: 'from-green-500 to-emerald-500', descKey: 'outCityRentalDesc' }, { key: 'selfDrive', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.4 2.7a2.5 2.5 0 0 1 3.4 0l5.5 5.5a2.5 2.5 0 0 1 0 3.4l-3.7 3.7a2.5 2.5 0 0 1-3.4 0L8.7 9.8a2.5 2.5 0 0 1 0-3.4zM14 7l3 3m-7.6.6l-6.814 6.814A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814"/></svg>', color: 'from-purple-500 to-pink-500', descKey: 'selfDriveDesc' }, { key: 'airportTransfer', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 50 50"><path fill="currentColor" d="M48.049 36.31c.523.169.951-.142.951-.692v-3.494c0-.55-.387-1.23-.859-1.512L29.859 19.717c-.472-.281-.859-.962-.859-1.511V6c0-.55-.168-1.417-.374-1.928c0 0-1.091-2.708-3-3.01A3.6 3.6 0 0 0 25.007 1h-.01a3.7 3.7 0 0 0-.713.072l-.216.048l-.328.102c-1.588.53-2.406 2.835-2.406 2.835A7 7 0 0 0 21 6v12.206c0 .55-.387 1.23-.859 1.512L1.859 30.612c-.472.282-.859.962-.859 1.512v3.494c0 .55.428.861.951.691l18.098-5.875c.523-.169.951.142.951.692v9.533c0 .55-.36 1.271-.8 1.601l-2.4 1.802c-.44.33-.8 1.051-.8 1.601V48c0 .55.433.876.961.724l6.075-1.745c.528-.152 1.394-.152 1.922 0l6.081 1.745c.528.152.961-.174.961-.724v-2.338c0-.55-.36-1.271-.8-1.601l-2.4-1.802c-.439-.33-.8-1.051-.8-1.601v-9.533c0-.55.428-.861.951-.691z"/></svg>', color: 'from-cyan-500 to-blue-500', descKey: 'airportTransferDesc' }, { key: 'tourPackage', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24"><path fill="currentColor" d="M21 4H7V2H5v20h2v-8h14l-2-5zm-3.86 5.74l.9 2.26H7V6h11.05l-.9 2.26l-.3.74zM14 9c0 1.1-.9 2-2 2s-2-.9-2-2s.9-2 2-2s2 .9 2 2"/></svg>', color: 'from-emerald-500 to-teal-500', descKey: 'tourPackageDesc' }, { key: 'customTrip', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24"><path fill="currentColor" d="M16.725 19.5q-.3-.125-.562-.262t-.538-.338l-1.075.325q-.175.05-.325-.012t-.25-.213l-.6-1q-.1-.15-.05-.325t.175-.3l.825-.725q-.05-.3-.05-.65t.05-.65l-.825-.725q-.125-.125-.175-.3t.05-.325l.6-1q.1-.15.25-.212t.325-.013l1.075.325q.275-.2.538-.337t.562-.263l.225-1.1q.05-.175.163-.288t.312-.112h1.2q.2 0 .313.113t.162.287l.225 1.1q.3.125.563.263t.537.337l1.075-.325q.175-.05.325.013t.25.212l.6 1q.1.15.05.325t-.175.3l-.825.725q.05.3.05.65t-.05.65l.825.725q.125.125.175.3t-.05.325l-.6 1q-.1.15-.25.213t-.325.012l-1.075-.325q-.275.2-.537.338t-.563.262l-.225 1.1q-.05.175-.162.288t-.313.112h-1.2q-.2 0-.312-.112t-.163-.288zm1.3-1.5q.825 0 1.413-.587T20.025 16t-.587-1.412T18.025 14t-1.412.588T16.025 16t.588 1.413t1.412.587M5 20q-.825 0-1.412-.587T3 18V4q0-.825.588-1.412T5 2h14q.825 0 1.413.588T21 4v4.025q0 .425-.288.7T20 9t-.712-.288T19 8V4H5v9h3.55q.3 0 .525.138t.35.362q.275.45.613.75t.712.475q.15.075.25.225t.075.325q-.1.95.038 1.862t.537 1.763q.175.375-.025.738t-.6.362z"/></svg>', color: 'from-fuchsia-500 to-violet-500', descKey: 'customTripDesc' }] as service}
+				<div
+					class="group rounded-3xl border border-white/30 bg-white/80 p-8 shadow-xl backdrop-blur-sm transition-all duration-500 hover:scale-[1.02] hover:border-amber-200/50 hover:shadow-2xl"
+				>
+					<div class="mb-6 flex items-center gap-3">
+						<div
+							class="rounded-2xl bg-gradient-to-br p-3 {service.color} text-white transition-transform duration-300 group-hover:scale-110"
+						>
+							{@html service.icon}
+						</div>
+						<h3 class="text-2xl font-light tracking-tight text-gray-900">{t(service.key)}</h3>
+					</div>
+					<p class="leading-relaxed font-light text-gray-600">{t(service.descKey)}</p>
+				</div>
+			{/each}
+		</div>
+	</div>
+</section>
+
+<!-- DESTINATIONS SECTION -->
+<section class="bg-gradient-to-b from-gray-50 to-white py-24">
+	<div class="mx-auto max-w-7xl px-6">
+		<div class="mb-20 text-center">
+			<h2 class="mb-6 text-5xl font-light tracking-tight text-gray-900">
+				{t('destinationsTitle')}
+			</h2>
+			<p class="text-xl font-light text-gray-600">{t('destinationSubtitle')}</p>
+		</div>
+
+		<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+			{#each destinations as destination}
+				<div
+					class="group overflow-hidden rounded-3xl border border-white/40 bg-white/70 shadow-lg backdrop-blur-sm transition-all duration-500 hover:border-amber-100/50 hover:shadow-2xl"
+				>
+					<div class="relative h-64 overflow-hidden rounded-t-3xl">
+						<img
+							src={destination.image}
+							alt={destination.name}
+							class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+						/>
+						<div
+							class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-100 transition-opacity duration-500"
+						></div>
+						<h3
+							class="absolute bottom-6 left-6 translate-y-0 text-2xl font-light text-white opacity-100 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100"
+						>
+							{destination.name}
+						</h3>
+					</div>
+					<div class="p-6">
+						<p class="leading-relaxed font-light text-gray-600">{destination.desc}</p>
+					</div>
+				</div>
+			{/each}
+		</div>
+	</div>
+</section>
+
+<!-- FLEET SECTION -->
+<section id="fleet" class="bg-white py-24">
+	<div class="mx-auto max-w-7xl px-6">
+		<div class="mb-20 text-center">
+			<h2 class="mb-6 text-5xl font-light tracking-tight text-gray-900">{t('fleetTitle')}</h2>
+			<p class="mx-auto max-w-3xl text-xl font-light text-gray-600">{t('fleetSubtitle')}</p>
+		</div>
+
+		<div class="grid gap-8 md:grid-cols-2">
+			{#each cars as car}
+				<div
+				
+				on:click={() => openModal(car.image)}
+
+					class="group overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-lg backdrop-blur-sm transition-all duration-500 hover:scale-[1.05] hover:border-amber-400 hover:shadow-2xl"
+				>
+					<!-- Gambar Mobil -->
+					<div class=" h-72 overflow-hidden rounded-t-3xl">
+						<img
+							src={car.image}
+							alt={car.name}
+							class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+						/>
+					</div>
+
+					<!-- Konten Mobil -->
+					<div class="space-y-6 p-6">
+						<!-- Nama Mobil & Harga -->
+						<div class="flex flex-col items-center justify-center md:flex-row md:justify-between">
+							<h3
+								class="text-2xl font-semibold text-orange-900 transition-all duration-300 group-hover:text-amber-600"
+							>
+								{car.name}
+							</h3>
+							<span class="text-2xl font-semibold text-amber-900">{car.price}/day</span>
+						</div>
+
+						<!-- Kategori, Bahan Bakar, Penumpang -->
+						<div class="flex hidden items-center justify-between space-x-4">
+							<!-- Kategori -->
+							<span class="flex items-center space-x-1 text-sm text-orange-700">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24">
+									<path
+										fill="currentColor"
+										d="M5.23 18v1.5q0 .213-.143.356T4.731 20H4.5q-.213 0-.356-.144T4 19.5v-7.346L5.985 6.5q.073-.238.281-.37q.209-.13.465-.13h10.615q.227 0 .413.138t.257.362L20 12.154V19.5q0 .213-.144.356T19.5 20h-.23q-.213 0-.357-.144t-.144-.356V18zm.186-6.846h13.169L17.112 7H6.889zm2.012 4.538q.466 0 .788-.326q.323-.327.323-.794q0-.466-.327-.788q-.327-.323-.793-.323q-.467 0-.79.327q-.321.327-.321.793q0 .467.326.79q.327.321.793.321m9.155 0q.466 0 .788-.326q.322-.327.322-.794q0-.466-.326-.788q-.327-.323-.793-.323q-.467 0-.79.327q-.321.327-.321.793q0 .467.326.79q.327.321.794.321"
+									/>
+								</svg>
+								<span>{car.category}</span>
+							</span>
+							<!-- Bahan Bakar -->
+							<span class="flex items-center space-x-1 text-sm text-orange-700">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 16 16">
+									<path
+										fill="currentColor"
+										d="M3 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5z"
+									/>
+									<path
+										fill="currentColor"
+										d="M1 2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1 2 2v.5a.5.5 0 0 0 1 0V8h-.5a.5.5 0 0 1-.5-.5V4.375a.5.5 0 0 1 .5-.5h1.495c-.011-.476-.053-.894-.201-1.222a.97.97 0 0 0-.394-.458c-.184-.11-.464-.195-.9-.195a.5.5 0 0 1 0-1q.846-.002 1.412.336c.383.228.634.551.794.907c.295.655.294 1.465.294 2.081v3.175a.5.5 0 0 1-.5.501H15v4.5a1.5 1.5 0 0 1-3 0V12a1 1 0 0 0-1-1v4h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1zm9 0a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v13h8z"
+									/>
+								</svg>
+								<span>{car.isPetrol ? t('petrol') : t('diesel')}</span>
+							</span>
+							<!-- Penumpang -->
+							<span class="flex items-center space-x-1 text-sm text-orange-700">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24">
+									<path
+										fill="currentColor"
+										d="M9 19h6v2H9c-2.76 0-5-2.24-5-5V7h2v9c0 1.66 1.34 3 3 3m1.42-13.59c.78-.78.78-2.05 0-2.83s-2.05-.78-2.83 0s-.78 2.05 0 2.83c.78.79 2.04.79 2.83 0M11.5 9c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v6c0 1.66 1.34 3 3 3h5.07l3.5 3.5L20 20.07L14.93 15H11.5z"
+									/>
+								</svg>
+								<span>{car.passengers}</span>
+							</span>
+						</div>
+
+						<!-- Fitur Mobil -->
+						<div class="flex hidden flex-wrap gap-2">
+							{#each car.features as feature}
+								<span
+									class="mb-2 rounded-full bg-orange-200/50 px-3 py-1 text-xs font-light text-orange-700 shadow-sm backdrop-blur-sm"
+								>
+									{feature}
+								</span>
+							{/each}
+						</div>
+					</div>
+				</div>
+			{/each}
+		</div>
+	</div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 py-24 text-white">
+	<div class="mx-auto max-w-7xl px-6">
+		<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+			{#each [{ icon: '🚗', title: t('feature1'), desc: t('feature1Desc') }, { icon: '👨‍✈️', title: t('feature2'), desc: t('feature2Desc') }, { icon: '💰', title: t('feature3'), desc: t('feature3Desc') }, { icon: '⏰', title: t('feature4'), desc: t('feature4Desc') }] as feature}
+				<div class="group text-center">
+					<div class="mb-5 text-5xl transition-transform duration-300 group-hover:scale-110">
+						{feature.icon}
+					</div>
+					<h3 class="mb-4 text-xl font-light tracking-tight">{feature.title}</h3>
+					<p class="leading-relaxed font-light text-slate-300">{feature.desc}</p>
+				</div>
+			{/each}
+		</div>
+	</div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section id="about" class="hidden bg-white py-24">
+	<div class="mx-auto max-w-7xl px-6">
+		<div class="grid items-center gap-16 md:grid-cols-2">
+			<div>
+				<h2 class="mb-8 text-5xl font-light tracking-tight text-gray-900">{t('aboutTitle')}</h2>
+				<p class="mb-10 max-w-lg text-lg leading-relaxed font-light text-gray-600">
+					{t('aboutDesc')}
+				</p>
+				<div class="space-y-5">
+					{#each ['Pengalaman 5+ tahun / 5+ years experience', 'Melayani wisatawan domestik & internasional / Serving domestic & international tourists', 'Armada terawat & driver berpengalaman / Well-maintained fleet & experienced drivers'] as item}
+						<div class="flex items-start gap-5">
+							<div
+								class="mt-1 h-6 w-6 flex-shrink-0 rounded-full bg-gradient-to-br from-amber-400 to-orange-400"
+							></div>
+							<span class="font-light text-gray-700">{item}</span>
+						</div>
+					{/each}
+				</div>
+			</div>
+			<div class="relative">
+				<img
+					src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop"
+					alt="About us"
+					class="rounded-3xl border border-white/50 shadow-2xl"
+				/>
+				<div
+					class="absolute -right-6 -bottom-6 h-24 w-24 rounded-3xl bg-gradient-to-br from-amber-400 to-orange-400 opacity-20 blur-xl"
+				></div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- CTA SECTION -->
+<section
+	id="contact"
+	class="bg-gradient-to-r from-amber-600 via-orange-500 to-amber-700 py-24 text-white"
+>
+	<div class="mx-auto max-w-4xl px-6 text-center">
+		<h2 class="mb-6 text-5xl font-light tracking-tight">{t('ctaTitle')}</h2>
+		<p class="mx-auto mb-10 max-w-2xl text-xl font-light text-amber-100/90">{t('ctaDesc')}</p>
+		<button
+			on:click={() => (showBookingModal = true)}
+			class="rounded-full border border-white/20 bg-white/10 px-10 py-5 text-lg font-medium text-white shadow-lg backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:shadow-xl"
+		>
+			📱 {t('ctaButton')}
+		</button>
+	</div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section class="hidden bg-gradient-to-b from-gray-50 to-white py-24">
+	<div class="mx-auto max-w-7xl px-6">
+		<div class="mb-20 text-center">
+			<h2 class="mb-6 text-5xl font-light tracking-tight text-gray-900">{t('contactTitle')}</h2>
+			<p class="text-xl font-light text-gray-600">{t('contactDesc')}</p>
+		</div>
+
+		<div class="grid gap-8 md:grid-cols-3">
+			{#each [{ icon: '📱', title: 'WhatsApp', content: '+6282343663454' }, { icon: '📧', title: 'Email', content: 'info@rentalmks.com' }, { icon: '📍', title: 'Lokasi / Location', content: 'Makassar, South Sulawesi' }] as contact}
+				<div
+					class="rounded-3xl border border-white/40 bg-white/70 p-8 text-center shadow-lg backdrop-blur-sm transition-all duration-500 hover:border-amber-100/50 hover:shadow-2xl"
+				>
+					<div class="mb-5 text-5xl">{contact.icon}</div>
+					<h3 class="mb-3 text-xl font-light tracking-tight text-gray-900">{contact.title}</h3>
+					<p class="font-light text-gray-600">{contact.content}</p>
+				</div>
+			{/each}
+		</div>
+	</div>
+</section>
+<!-- {#each ['cityRental', 'outCityRental', 'selfDrive', 'airportTransfer', 'tourPackage', 'customTrip'] as service} -->
+
+<button
+	on:click={() => {
+		handleBook([
+			t('cityRental'),
+			t('outCityRental'),
+			t('selfDrive'),
+			t('airportTransfer'),
+			t('tourPackage'),
+			t('customTrip')
+		]);
+	}}
+	class="fixed right-10 bottom-10 z-20 flex h-17 w-17 animate-bounce items-center justify-center rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-sm text-white shadow-lg"
+>
+	{t('bookNow')}
+</button>
+<!-- FOOTER -->
+<footer class="bg-slate-900 py-20 text-white">
+	<div class="mx-auto max-w-7xl px-6">
+		<div class="mb-16 grid gap-12 md:grid-cols-4">
+			<div>
+				<div
+					class="mb-6 bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-3xl font-light text-transparent"
+				>
+					 Gowata Rent
+				</div>
+				<p class="mb-6 max-w-xs font-light text-gray-400">{t('footerDesc')}</p>
+				<div class="flex space-x-6">
+					<a href="#" class="text-xl text-gray-400 transition-colors hover:text-amber-400">📘</a>
+					<a href="#" class="text-xl text-gray-400 transition-colors hover:text-amber-400">📷</a>
+					<a href="#" class="text-xl text-gray-400 transition-colors hover:text-amber-400">🐦</a>
+				</div>
+			</div>
+			<div>
+				<h4 class="mb-6 text-lg font-light tracking-wide text-amber-200">{t('quickLinks')}</h4>
+				<div class="space-y-3">
+					{#each ['home', 'services', 'fleet', 'contact'] as link}
+						<a
+							href={`#${link}`}
+							class="block font-light text-gray-400 transition-colors duration-300 hover:translate-x-1 hover:text-white"
+							>{t(link)}</a
+						>
+					{/each}
+				</div>
+			</div>
+			<div>
+				<h4 class="mb-6 text-lg font-light tracking-wide text-amber-200">{t('services')}</h4>
+				<div class="space-y-3">
+					{#each ['cityRental', 'outCityRental', 'selfDrive', 'airportTransfer', 'tourPackage', 'customTrip'] as service}
+						<div class="font-light text-gray-400">{t(service)}</div>
+					{/each}
+				</div>
+			</div>
+			<div>
+				<h4 class="mb-6 text-lg font-light tracking-wide text-amber-200">{t('contact')}</h4>
+				<div class="space-y-4">
+					<div class="flex items-center gap-3 font-light text-gray-400">📱 +6282343663454</div>
+					<!-- <div class="flex items-center gap-3 font-light text-gray-400">📧 info@rentalmks.com</div> -->
+					<div class="flex items-center gap-3 font-light text-gray-400">
+						📍 Makassar, South Sulawesi
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="border-t border-gray-800 pt-8 text-center">
+			<p class="font-light text-gray-400">
+				© 2024 RentalMks. All rights reserved. | Luxury Car Rental Experience in Makassar
+			</p>
+		</div>
+	</div>
+	<BookingModal bind:show={showBookingModal} />
+</footer>
+
+<style>
+	:global(html) {
+		scroll-behavior: smooth;
+		font-family:
+			'Inter',
+			-apple-system,
+			BlinkMacSystemFont,
+			'Segoe UI',
+			Roboto,
+			Oxygen,
+			Ubuntu,
+			Cantarell,
+			sans-serif;
+	}
+
+	:global(body) {
+		background-color: #fafafa;
+	}
+
+	/* Elegant scrollbar */
+	:global(body::-webkit-scrollbar) {
+		width: 8px;
+	}
+	:global(body::-webkit-scrollbar-track) {
+		background: transparent;
+	}
+	:global(body::-webkit-scrollbar-thumb) {
+		background: #e2e8f0;
+		border-radius: 4px;
+	}
+	:global(body::-webkit-scrollbar-thumb:hover) {
+		background: #cbd5e1;
+	}
+
+	/* Luxury animations */
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.fade-in {
+		animation: fadeIn 0.8s ease-out forwards;
+	}
+
+	/* Premium hover effects */
+	button,
+	a {
+		transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	}
+
+	/* Glassmorphism */
+	.backdrop-blur-sm {
+		backdrop-filter: blur(4px);
+	}
+	.backdrop-blur-lg {
+		backdrop-filter: blur(16px);
+	}
+
+	/* Subtle shadows */
+	.shadow-xl {
+		box-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.1);
+	}
+	.shadow-2xl {
+		box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.15);
+	}
+
+	/* Luxury fonts */
+	h1,
+	h2,
+	h3,
+	h4 {
+		font-weight: 300;
+		letter-spacing: -0.02em;
+	}
+
+	/* Section spacing */
+	section {
+		scroll-margin-top: 80px;
+	}
+</style>
