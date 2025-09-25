@@ -1,4 +1,5 @@
 <script>
+	import { PUBLIC_WHATSAPP_NUMBER } from '$env/static/public';
     import { quintOut } from 'svelte/easing';
     import { fade, fly } from 'svelte/transition';
 
@@ -118,8 +119,8 @@
 
 Mohon konfirmasi ketersediaan. Terima kasih.`);
 
-        const whatsappNumber = "6282343663454"; // Ganti dengan nomor WhatsApp Anda
-        return `https://wa.me/${whatsappNumber}?text=${formattedMessage}`;
+        // const whatsappNumber = ""; // Ganti dengan nomor WhatsApp Anda
+        return `https://wa.me/${PUBLIC_WHATSAPP_NUMBER}?text=${formattedMessage}`;
     }
 
     function handleSubmit() {

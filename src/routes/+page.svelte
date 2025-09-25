@@ -1,7 +1,7 @@
 <script>
 	import { Car, MapPin } from 'lucide-svelte';
 	import BookingModal from '$lib/BookingModal.svelte';
-
+	import { PUBLIC_WHATSAPP_NUMBER } from '$env/static/public';
 	let currentLanguage = $state('id');
 	let isMenuOpen = $state(false);
 	let selectedService = $state(null);
@@ -444,7 +444,7 @@
 
 		<div class="flex flex-col sm:flex-row gap-4 justify-center">
 			<a
-				href="https://wa.me/6282343663454"
+				href={"https://wa.me/"+PUBLIC_WHATSAPP_NUMBER}
 				target="_blank"
 				class="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
 			>
@@ -612,12 +612,12 @@
 	</div>
 </section>
 
-<section id="contact" class="py-20 bg-red-400 text-white">
+<section id="contact" class="py-20 bg-red-700 text-white">
 	<div class="text-center max-w-3xl mx-auto px-6">
 		<h2 class="text-3xl md:text-4xl font-light mb-4">{t('ctaTitle')}</h2>
 		<p class="mb-6 text-red-100">{t('ctaDesc')}</p>
 		<a
-			href="https://wa.me/6282343663454"
+			href={"https://wa.me/"+PUBLIC_WHATSAPP_NUMBER}
 			target="_blank"
 			class="inline-block bg-white text-red-800 px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition"
 		>
@@ -648,7 +648,7 @@
 			<div>
 				<h4 class="text-red-400 font-medium mb-4">{t('contact')}</h4>
 				<div class="space-y-2">
-					<div>📱 +62 823-4366-3454</div>
+					<div>📱 +{PUBLIC_WHATSAPP_NUMBER}</div>
 					<div>📍 Makassar, Sulawesi Selatan</div>
 				</div>
 			</div>
