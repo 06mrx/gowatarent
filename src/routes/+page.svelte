@@ -172,7 +172,7 @@
 			category: 'SUV',
 			isPterol: true,
 			passengers: '5',
-			price: '250-350K',
+			price: '300K',
 			features: ['AUTOMATIC', 'AC', 'AUDIO', 'COMFORTABLE'],
 			image: '/images/brio.webp'
 		},
@@ -181,7 +181,7 @@
 			category: '4WD SUV',
 			isPterol: false,
 			passengers: '7',
-			price: '250-300K',
+			price: '250K',
 			features: ['4WD', 'AC', 'AUDIO', 'COMFORTABLE'],
 			image: '/images/agya.webp'
 		},
@@ -190,7 +190,7 @@
 			category: '4WD SUV',
 			isPterol: false,
 			passengers: '7',
-			price: '250-300K',
+			price: '350K',
 			features: ['4WD', 'AC', 'AUDIO', 'COMFORTABLE'],
 			image: '/images/jazz.webp'
 		},
@@ -199,7 +199,7 @@
 			category: 'SUV',
 			isPterol: true,
 			passengers: '5',
-			price: '300-350K',
+			price: '450K',
 			features: ['AUTOMATIC', 'AC', 'AUDIO', 'COMFORTABLE'],
 			image: '/images/hrv.webp'
 		},
@@ -208,7 +208,7 @@
 			category: '4WD SUV',
 			isPterol: false,
 			passengers: '7',
-			price: '350-400K',
+			price: '350K',
 			features: ['4WD', 'AC', 'AUDIO', 'COMFORTABLE'],
 			image: '/images/city.webp'
 		},
@@ -217,7 +217,7 @@
 			category: '4WD SUV',
 			isPterol: false,
 			passengers: '7',
-			price: '300-350K',
+			price: '350K',
 			features: ['4WD', 'AC', 'AUDIO', 'COMFORTABLE'],
 			image: '/images/raize.webp'
 		},
@@ -226,32 +226,32 @@
 	const car3rows = [
 		{
 			name: 'Xpander',
-			price: '250-350K',
+			price: '350K',
 			image: '/images/xpander.webp'
 		},
 		{
 			name: 'Rush',
-			price: '250-350K',
+			price: '350K',
 			image: '/images/rush.webp'
 		},
 		{
 			name: 'BRV',
-			price: '250-350K',
+			price: '350K',
 			image: '/images/brv.webp'
 		},
 		{
 			name: 'All New Avanza',
-			price: '250-350K',
+			price: '350K',
 			image: '/images/avanza.webp'
 		},
 		{
 			name: 'Sigra',
-			price: '250-350K',
+			price: '300K',
 			image: '/images/sigra.webp'
 		},
 		{
 			name: 'Innova Reborn',
-			price: '250-350K',
+			price: '400K',
 			image: '/images/innova_reborn.webp'
 		},
 	];
@@ -259,27 +259,28 @@
 	const premiumCars = [
 		{
 			name: 'Innova Zenix',
-			price: '250-350K',
+			price: '600K',
 			image: '/images/innova_zenix.webp'
 		},
 		{
 			name: 'Fortuner',
-			price: '250-350K',
+			price: '1000K',
 			image: '/images/fortuner.webp'
 		},
 		{
 			name: 'Pajero',
-			price: '250-350K',
+			price: '1000K',
 			image: '/images/pajero.webp'
 		},
 		{
 			name: 'Alphard',
-			price: '250-350K',
-			image: '/images/alphard.webp'
+			price: '2300K',
+			image: '/images/alphard.webp',
+			desc: 'Include driver all in fuel (bensin)'
 		},
 		{
 			name: 'Hiace',
-			price: '250-350K',
+			price: '-',
 			image: '/images/hiace.webp'
 		}
 	]
@@ -602,7 +603,7 @@
 								<h4 class="font-bold text-slate-800">{car.name}</h4>
 								<span class="text-purple-700 font-semibold text-sm">{car.price}/day</span>
 							</div>
-							<p class="text-xs text-slate-500 mt-2">Luxury comfort for special occasions</p>
+							<p class="text-xs text-slate-500 mt-2">{car.desc ?? 'Luxury comfort for special occasions'}</p>
 						</div>
 					</div>
 				{/each}
